@@ -1,0 +1,5 @@
+build/
+debug/
+test
+compile_flags.txt
+librenderer.*
