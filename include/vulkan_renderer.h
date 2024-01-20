@@ -28,6 +28,15 @@ struct VulkanData {
     VkImage *images;
     VkImageView *image_views;
 
+    VkPipeline pipeline;
+    VkPipelineLayout pipeline_layout;
+
+    VkRenderPass render_pass;
+
+    VkFramebuffer *framebuffers;
+
+    VkViewport viewport;
+
     unsigned image_count;
 
     int graphic_queue_index;
@@ -43,5 +52,9 @@ int vulkan_create_device();
 int vulkan_get_queues();
 int vulkan_create_swapchain();
 int vulkan_prepare_image_views();
+int vulkan_create_render_pass();
+int vulkan_create_pipeline();
+
+int vulkan_create_shader_module(VkShaderModule *module, const char *binary, unsigned length);
 
 #endif

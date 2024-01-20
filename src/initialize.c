@@ -16,7 +16,9 @@ int initialize_renderer(void *data_share, const char **required_extensions, unsi
         vulkan_get_surface_data() ||
         vulkan_create_device() ||
         vulkan_get_queues() ||
-        vulkan_create_swapchain()
+        vulkan_create_swapchain() ||
+        vulkan_create_render_pass() ||
+        vulkan_create_pipeline()
     ) { return 1; }
 
     return 0;

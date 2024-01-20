@@ -29,6 +29,14 @@ int vulkan_prepare_image_views() {
         return 1;
     }
 
+    vulkan_data.framebuffers = malloc(vulkan_data.image_count * sizeof(VkImage));
+
+    if(!vulkan_data.framebuffers) {
+        (void) fprintf(stderr, "error allocating framebuffers buffer: %s\n", strerror(errno));
+
+        return 1;
+    }
+
     VkImageViewCreateInfo info = {0};
     info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     info.format = vulkan_data.image_format;
@@ -41,10 +49,23 @@ int vulkan_prepare_image_views() {
     info.subresourceRange.levelCount = 1;
     info.subresourceRange.layerCount = 1;
 
+    VkFramebufferCreateInfo framebuffer_info = {0};
+    framebuffer_info.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+    framebuffer_info.renderPass = vulkan_data.render_pass;
+    framebuffer_info.attachmentCount = 1;
+    framebuffer_info.width = vulkan_data.image_extent.width;
+    framebuffer_info.height = vulkan_data.image_extent.height;
+    framebuffer_info.layers = 1;
+
     for(unsigned image_index = 0; image_index < vulkan_data.image_count; ++image_index) {
         info.image = vulkan_data.images[image_index];
 
         if(vulkan_error_handle(vkCreateImageView(vulkan_data.device, &info, 0x0, vulkan_data.image_views + image_index), "creating image view"))
+            return 1;
+
+        framebuffer_info.pAttachments = vulkan_data.image_views + image_index;
+
+        if(vulkan_error_handle(vkCreateFramebuffer(vulkan_data.device, &framebuffer_info, 0x0, vulkan_data.framebuffers + image_index), "creating framebuffer"))
             return 1;
     }
 
