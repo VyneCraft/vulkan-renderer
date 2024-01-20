@@ -5,12 +5,15 @@
 
 struct VulkanData vulkan_data;
 
-int initialize_renderer(const char **required_extensions, unsigned extensions_count) {
+int initialize_renderer(void *data_share, const char **required_extensions, unsigned extensions_count) {
+    if(data_share)
+        *(void **) data_share = &vulkan_data;
+
     if(
         vulkan_create_instance(required_extensions, extensions_count) ||
-        get_window_surface(&vulkan_data.surface) ||
-        vulkan_get_surface_data() ||
+        window_create_surface((void **) &vulkan_data.surface) ||
         vulkan_select_driver() ||
+        vulkan_get_surface_data() ||
         vulkan_create_device() ||
         vulkan_get_queues() ||
         vulkan_create_swapchain()

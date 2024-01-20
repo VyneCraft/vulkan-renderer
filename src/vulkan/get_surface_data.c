@@ -6,15 +6,15 @@
 #include <string.h>
 #include <vulkan/vulkan_core.h>
 
-int vulkan_get_surface_capabilities() {
+int vulkan_get_surface_data() {
     VkSurfaceCapabilitiesKHR capabilities = {0};
 
-    if(vulkan_error_handle(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkan_data.driver, vulkan_data.surface, &capabilities), "getting surfcae capabilites"))
+    if(vulkan_error_handle(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkan_data.driver, vulkan_data.surface, &capabilities), "getting surface capabilites"))
         return 1;
 
     if(capabilities.currentExtent.width != UINT32_MAX)
         memcpy(&vulkan_data.image_extent, &capabilities.currentExtent, sizeof(vulkan_data.image_extent));
-    else if(get_window_framebuffer_size(&vulkan_data.image_extent.width, &vulkan_data.image_extent.height))
+    else if(window_get_framebuffer_size(&vulkan_data.image_extent.width, &vulkan_data.image_extent.height))
             return 1;
 
     vulkan_data.minimum_image_count = capabilities.minImageCount;
@@ -78,8 +78,6 @@ int vulkan_get_surface_capabilities() {
 
     if(!is_present_mode_selected)
         vulkan_data.image_present_mode = VK_PRESENT_MODE_FIFO_KHR; // That mode is required by the vulkan, a vulkan driver will always need to have it
-
-    
 
     return 0;
 }

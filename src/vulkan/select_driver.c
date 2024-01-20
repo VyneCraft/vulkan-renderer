@@ -13,7 +13,9 @@ int vulkan_select_driver() {
 
     if(vulkan_error_handle(vkEnumeratePhysicalDevices(vulkan_data.instance, &driver_count, drivers), "enumerating physical devices"))
         return 1;
-    
+ 
+    vulkan_data.driver = drivers[0];
+
     unsigned highest_driver_points = 0;
     unsigned driver_points;
 
